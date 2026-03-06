@@ -1,0 +1,5 @@
+gradio>=4.0.0
+openai>=1.0.0 # or whichever provider you use for function calling
+transformers>=4.0.0 # for HuggingFace sentiment model
+torch>=2.0.0 # dependency for transformers
+python-dotenv>=1.0.0
