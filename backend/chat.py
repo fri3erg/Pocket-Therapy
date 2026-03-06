@@ -27,13 +27,13 @@ class TherapyAgent:
                 "type": "function",
                 "function": {
                     "name": "update_therapy_category",
-                    "description": "Updates your therapeutic approach by classifying the user into a specific emotional category. Use this tool proactively when you detect a mood shift. Available categories: 'neutral' (default), 'anxious' (needs grounding/reassurance), 'depressed' (needs deep empathy/validation), 'angry' (needs de-escalation/outlet), 'joyful' (needs celebration/reinforcement).",
+                    "description": "Updates your therapeutic approach by classifying the user into a specific emotional category. Use this tool proactively when you detect a mood shift, but this tool is not mandatory. Available categories: 'neutral' (default), 'anxious' (needs grounding/reassurance), 'depressed' (needs deep empathy/validation), 'angry' (needs de-escalation/outlet), 'joyful' (needs celebration/reinforcement).",
                     "parameters": {
                         "type": "object",
                         "properties": {
                             "category": {
                                 "type": "string",
-                                "enum": ["neutral", "anxious", "depressed", "angry", "joyful"],
+                                "enum": ["neutral", "anxious", "depressed", "angry", "joyful"], #change this if you change categories
                                 "description": "The emotional category that best represents the user right now. You MUST choose one of the predefined enums."
                             }
                         },
@@ -75,38 +75,42 @@ class TherapyAgent:
             
             # 4. Handle tool calls if any
             if response_message.tool_calls:
-                for tool_call in response_message.tool_calls:
-                    if tool_call.type == "function" and tool_call.function.name == "update_therapy_category":
-                        function_args = json.loads(tool_call.function.arguments)
-                        category = function_args.get('category')
-                        
-                        if category:
-                            self.prompt_manager.set_category(category)
+                try:
+                    for tool_call in response_message.tool_calls:
+                        if tool_call.type == "function" and tool_call.function.name == "update_therapy_category":
+                            function_args = json.loads(tool_call.function.arguments)
+                            category = function_args.get('category')
                             
-                            # Debug print for system prompt switch
-                            print(f"\n{'='*20} DEBUG: SYSTEM PROMPT SWITCH {'='*20}")
-                            print(f"New Category: {category}")
-                            print(f"Full System Prompt:\n{self.get_system_prompt()}")
-                            print(f"{'='*60}\n")
-                            
-                            # Append tool response & message to messages to get the final text response
-                            messages.append(typing.cast(ChatCompletionMessageParam, response_message.model_dump()))
-                            messages.append({
-                                "role": "tool",
-                                "tool_call_id": tool_call.id,
-                                "content": f"System prompt successfully updated matching the {category} category."
-                            })
-                            
-                            # CRITICAL: Update the actual system prompt string at the top of the context window
-                            # so the LLM generates its response using the NEW emotional category.
-                            messages[0] = {"role": "system", "content": self.get_system_prompt()}
-                            
-                            # Call LLM again to get the actual user-facing reply
-                            final_response = self.client.chat.completions.create(
-                                model=self.model,
-                                messages=messages
-                            )
-                            return final_response.choices[0].message.content or "I understand."
+                            if category:
+                                self.prompt_manager.set_category(category)
+                                
+                                # Debug print for system prompt switch
+                                print(f"\n{'='*20} DEBUG: SYSTEM PROMPT SWITCH {'='*20}")
+                                print(f"New Category: {category}")
+                                print(f"Full System Prompt:\n{self.get_system_prompt()}")
+                                print(f"{'='*60}\n")
+                                
+                                # Append tool response & message to messages to get the final text response
+                                messages.append(typing.cast(ChatCompletionMessageParam, response_message.model_dump()))
+                                messages.append({
+                                    "role": "tool",
+                                    "tool_call_id": tool_call.id,
+                                    "content": f"System prompt successfully updated matching the {category} category."
+                                })
+                                
+                                # CRITICAL: Update the actual system prompt string at the top of the context window
+                                # so the LLM generates its response using the NEW emotional category.
+                                messages[0] = {"role": "system", "content": self.get_system_prompt()}
+                                
+                                # Call LLM again to get the actual user-facing reply
+                                final_response = self.client.chat.completions.create(
+                                    model=self.model,
+                                    messages=messages
+                                )
+                                return final_response.choices[0].message.content or "I understand."
+                except Exception as tool_err:
+                    print(f"Error during tool execution: {tool_err}")
+
 
             return response_message.content or "I hear you."
 
