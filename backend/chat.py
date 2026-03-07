@@ -5,6 +5,7 @@ from openai import OpenAI
 from openai.types.chat import ChatCompletionMessageParam, ChatCompletionToolParam
 from .prompts import PromptManager
 from .sentiment import SentimentAnalyzer
+from backend import sentiment
 
 class TherapyAgent:
     def __init__(self, model="gpt-4o"):
@@ -26,18 +27,18 @@ class TherapyAgent:
             {
                 "type": "function",
                 "function": {
-                    "name": "update_therapy_category",
-                    "description": "Updates your therapeutic approach by classifying the user into a specific emotional category. Use this tool proactively when you detect a mood shift, but this tool is not mandatory. Available categories: 'neutral' (default), 'anxious' (needs grounding/reassurance), 'depressed' (needs deep empathy/validation), 'angry' (needs de-escalation/outlet), 'joyful' (needs celebration/reinforcement).",
+                    "name": "update_therapy_categories",
+                    "description": "Updates your therapeutic approach by classifying the user into a specific emotional categories. Use this tool proactively when you detect a mood shift, but this tool is not mandatory. Available categories: 'neutral' (default), 'anxious' (needs grounding/reassurance), 'depressed' (needs deep empathy/validation), 'angry' (needs de-escalation/outlet), 'joyful' (needs celebration/reinforcement).",
                     "parameters": {
                         "type": "object",
                         "properties": {
-                            "category": {
+                            "categories": {
                                 "type": "string",
                                 "enum": ["neutral", "anxious", "depressed", "angry", "joyful"], #change this if you change categories
-                                "description": "The emotional category that best represents the user right now. You MUST choose one of the predefined enums."
+                                "description": "The emotional categories that best represents the user right now. You MUST choose one of the predefined enums."
                             }
                         },
-                        "required": ["category"]
+                        "required": ["categories"]
                     }
                 }
             }
@@ -48,8 +49,8 @@ class TherapyAgent:
 
     def get_response(self, user_message: str, history: list) -> str:
         # 1. (Optional) Run local sentiment analysis
-        # sentiment = self.sentiment_analyzer.analyze(user_message)
-        # print(f"Detected sentiment: {sentiment}")
+        sentiments = self.sentiment_analyzer.analyze(user_message)
+        print(f"Detected sentiments: {sentiments}")
         
         if not self.client:
             return "API Key not configured. Please set OPENAI_API_KEY in your .env file."
@@ -77,16 +78,16 @@ class TherapyAgent:
             if response_message.tool_calls:
                 try:
                     for tool_call in response_message.tool_calls:
-                        if tool_call.type == "function" and tool_call.function.name == "update_therapy_category":
-                            function_args = json.loads(tool_call.function.arguments)
-                            category = function_args.get('category')
+                        if tool_call.type == "function" and tool_call.function.name == "update_therapy_categories":
+                            #function_args = json.loads(tool_call.function.arguments)
+                            categories = sentiments #function_args.get('categories')
                             
-                            if category:
-                                self.prompt_manager.set_category(category)
+                            if categories:
+                                self.prompt_manager.set_categories(categories)
                                 
                                 # Debug print for system prompt switch
                                 print(f"\n{'='*20} DEBUG: SYSTEM PROMPT SWITCH {'='*20}")
-                                print(f"New Category: {category}")
+                                print(f"New categories: {categories}")
                                 print(f"Full System Prompt:\n{self.get_system_prompt()}")
                                 print(f"{'='*60}\n")
                                 
@@ -95,11 +96,11 @@ class TherapyAgent:
                                 messages.append({
                                     "role": "tool",
                                     "tool_call_id": tool_call.id,
-                                    "content": f"System prompt successfully updated matching the {category} category."
+                                    "content": f"System prompt successfully updated matching the {categories} categories."
                                 })
                                 
                                 # CRITICAL: Update the actual system prompt string at the top of the context window
-                                # so the LLM generates its response using the NEW emotional category.
+                                # so the LLM generates its response using the NEW emotional categories.
                                 messages[0] = {"role": "system", "content": self.get_system_prompt()}
                                 
                                 # Call LLM again to get the actual user-facing reply
