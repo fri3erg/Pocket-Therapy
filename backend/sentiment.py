@@ -41,9 +41,8 @@ class SentimentAnalyzer:
         reverse=True
         )
 
-        filtered_emotions = [e["label"] for e in filtered_emotions]
+        filtered_emotions = list(dict.fromkeys([filtered_emotions]))
         emotion_str = ", ".join(filtered_emotions)
-
         print(emotion_str)
         print(filtered_emotions)
         print("Emotion:", emotion_out)
