@@ -5,16 +5,6 @@ class SentimentAnalyzer:
         pass
         
     def analyze(self, text: str) -> dict:
-        """
-        Placeholder for HuggingFace sentiment analysis.
-        This could return emotions like {'sadness': 0.8, 'joy': 0.1}
-        Instead of returning an external pipeline right now, we return a mock.
-        """
-        # TODO: Implement local HuggingFace inference here.
-        # It's kept separate to avoid blocking the main textual LLM and 
-        # to allow specialized architectures (like running on a local GPU).
-
-
         # 1) General emotion model
         emotion_clf = pipeline(
             "text-classification",
@@ -32,19 +22,18 @@ class SentimentAnalyzer:
         emotion_out = emotion_clf(text)[0]
         goemotion_out = goemotion_clf(text)[0]
 
-        threshold = 0.5
 
-        filtered_emotions = sorted(
-        [e for e in emotion_out if e["score"] >= threshold] +
-        [e for e in goemotion_out if e["score"] >= threshold],
-        key=lambda x: x["score"],
-        reverse=True
-        )
+        top_emotion = max(emotion_out, key=lambda x: x["score"])
 
-        filtered_emotions = list(dict.fromkeys([filtered_emotions]))
-        emotion_str = ", ".join(filtered_emotions)
-        print(emotion_str)
-        print(filtered_emotions)
+        k = 3
+        goemotion_filtered = sorted(goemotion_out, key=lambda x: x["score"], reverse=True)[:k]
+
+        combined = [top_emotion] + goemotion_filtered
+
+
+        filtered_emotions = list(dict.fromkeys(e["label"] for e in combined))
+
+        print("Filtered emotions:", filtered_emotions)
         print("Emotion:", emotion_out)
         print("GoEmotions:", goemotion_out)
         return filtered_emotions
