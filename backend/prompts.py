@@ -1,5 +1,3 @@
-import json
-
 class PromptManager:
     def __init__(self):
         self.base_prompt = (
@@ -22,5 +20,5 @@ class PromptManager:
     def get_full_prompt(self, sentiment_list: list) -> str:
         #state_prompt = self.categories.get(self.current_category, self.categories["neutral"])
         emotions_text = "\n".join(self.categories[e] for e in sentiment_list if e in self.categories )
-        return f"{self.base_prompt}\n\nCurrent Patientstate ({self.current_category}):\n{emotions_text}"
+        return f"{self.base_prompt}\nCurrent Patientstate ({self.current_category}):\n{emotions_text}"
     
