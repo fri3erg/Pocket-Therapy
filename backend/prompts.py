@@ -19,17 +19,8 @@ class PromptManager:
         
         self.current_category = "neutral"
         
-    def get_full_prompt(self) -> str:
-        state_prompt = self.categories.get(self.current_category, self.categories["neutral"])
-        return f"{self.base_prompt}\n\nCurrent Context/State ({self.current_category}):\n{state_prompt}"
-        
-    def set_category(self, category: str):
-        """
-        This method will be called via the LLM's function calling feature
-        to adapt its own instructions based on the conversation evolution.
-        """
-        if category in self.categories:
-            self.current_category = category
-            print(f"[PromptManager] Switched therapy category to: {category}")
-        else:
-            print(f"[PromptManager] Attempted to switch to unknown category: {category}")
+    def get_full_prompt(self, sentiment_list: list) -> str:
+        #state_prompt = self.categories.get(self.current_category, self.categories["neutral"])
+        emotions_text = "\n".join(self.categories[e] for e in sentiment_list if e in self.categories )
+        return f"{self.base_prompt}\n\nCurrent Patientstate ({self.current_category}):\n{emotions_text}"
+    

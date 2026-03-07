@@ -79,18 +79,9 @@ class TherapyAgent:
                 try:
                     for tool_call in response_message.tool_calls:
                         if tool_call.type == "function" and tool_call.function.name == "update_therapy_categories":
-                            #function_args = json.loads(tool_call.function.arguments)
-                            categories = sentiments #function_args.get('categories')
+                            categories = sentiments
                             
                             if categories:
-                                self.prompt_manager.set_categories(categories)
-                                
-                                # Debug print for system prompt switch
-                                print(f"\n{'='*20} DEBUG: SYSTEM PROMPT SWITCH {'='*20}")
-                                print(f"New categories: {categories}")
-                                print(f"Full System Prompt:\n{self.get_system_prompt()}")
-                                print(f"{'='*60}\n")
-                                
                                 # Append tool response & message to messages to get the final text response
                                 messages.append(typing.cast(ChatCompletionMessageParam, response_message.model_dump()))
                                 messages.append({
