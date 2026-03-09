@@ -34,7 +34,42 @@ class TherapyAgent:
                         "properties": {
                             "categories": {
                                 "type": "string",
-                                "enum": ["neutral", "anxious", "depressed", "angry", "joyful"], #change this if you change categories
+                                "enum": [
+                                            "neutral",
+                                            "nervousness",
+                                            "sadness",
+                                            "anger",
+                                            "joy",
+                                            "fear",
+                                            "disgust",
+                                            "surprise",
+                                            "curiosity",
+                                            "annoyance",
+                                            "confusion",
+                                            "disapproval",
+                                            "realization",
+                                            "remorse",
+                                            "embarrassment",
+                                            "approval",
+                                            "optimism",
+                                            "caring",
+                                            "desire",
+                                            "grief",
+                                            "excitement",
+                                            "love",
+                                            "admiration",
+                                            "relief",
+                                            "amusement",
+                                            "gratitude",
+                                            "pride",
+                                            "stress",
+                                            "anxiety",
+                                            "depression",
+                                            "suicidal",
+                                            "bipolar",
+                                            "personality_disorder",
+                                            "normal"
+                                        ]
                                 "description": "The emotional categories that best represents the user right now. You MUST choose one of the predefined enums."
                             }
                         },
