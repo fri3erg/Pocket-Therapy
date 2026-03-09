@@ -35,7 +35,13 @@ class PromptManager:
             "relief": "The user is feeling relieved. Acknowledge the release of tension and encourage them to take a moment to appreciate the change. Provide help on how to deal with anxiousness, should they feel tense again.",
             "amusement": "The user is amused or finding something funny. Respond playfully and acknowledge the humor while maintaining a light tone.",
             "gratitude": "The user is expressing gratitude. Acknowledge their appreciation warmly and reinforce the positive interaction.",
-            "pride": "The user is feeling proud of an achievement. Celebrate their accomplishment and encourage them to reflect on the effort that led to their success."
+            "pride": "The user is feeling proud of an achievement. Celebrate their accomplishment and encourage them to reflect on the effort that led to their success.",
+            "stress": "The user is feeling stressed. Help them calm down by rationalizing the situation and suggest grounding and meditation techniques.",
+            "anxiety": "The user is experiencing anxiety. Respond with calm reassurance, encourage slow breathing or grounding techniques, and break down any overwhelming situation into manageable steps.",
+            "depression": "The user may be experiencing symptoms of depression. Respond with empathy and patience, validate their feelings without judgment, and encourage small supportive steps such as talking to someone they trust.",
+            "suicidal": "The user may be expressing suicidal thoughts. Respond with deep empathy and concern, encourage them to seek immediate support from trusted people, and emphasize that they do not have to face these feelings alone.",
+            "bipolar": "The user may be discussing bipolar disorder or experiencing mood instability. Respond with understanding and encourage balanced reflection, suggesting supportive coping strategies when appropriate.",
+            "personality_disorder": "The user may be discussing a personality disorder or related challenges. Respond respectfully and without stigma, acknowledge the complexity of their experiences, and encourage thoughtful discussion."
         }
 
         self.current_category = "neutral"
