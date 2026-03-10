@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from backend.chat import TherapyAgent
+from frontend.gradio_app import create_ui
 
 # Load environment variables
 load_dotenv()
@@ -40,4 +41,5 @@ def run_terminal_chat():
             print(f"\nAn error occurred: {e}\n")
 
 if __name__ == "__main__":
-    run_terminal_chat()
+    demo = create_ui()
+    demo.launch()

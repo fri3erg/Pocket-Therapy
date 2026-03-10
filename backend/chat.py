@@ -56,9 +56,8 @@ class TherapyAgent:
         
         # 2. Build conversation context
         messages: list[ChatCompletionMessageParam] = [{"role": "system", "content": self.get_system_prompt()}]
-        for past_user, past_bot in history:
-            messages.append({"role": "user", "content": past_user})
-            messages.append({"role": "assistant", "content": past_bot})
+        for msg in history:
+            messages.append(msg)
             
         messages.append({"role": "user", "content": user_message})
         
