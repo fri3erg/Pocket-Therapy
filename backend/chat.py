@@ -10,8 +10,8 @@ from .sentiment import SentimentAnalyzer
 class TherapyAgent:
     def __init__(self, model="gpt-4o"):
         self.prompt_manager = PromptManager()
-        # self.sentiment_analyzer = SentimentAnalyzer()
-
+        self.sentiment_analyzer = SentimentAnalyzer()
+        self.system_prompt = self.prompt_manager.get_base_prompt()
         # Initialize LLM Client
         api_key = os.environ.get("OPENAI_API_KEY")
         if not api_key:
@@ -98,14 +98,18 @@ class TherapyAgent:
             }
         ]
 
-    def get_system_prompt(self) -> str:
-        return self.prompt_manager.get_full_prompt()
+    def get_system_prompt(self,) -> str:
+        return self.system_prompt
+    
+    def update_syste_prompt(self, sentiments: typing.List) -> str:
+        self.system_prompt = self.prompt_manager.get_full_prompt(sentiments)
 
     def get_response(self, user_message: str, history: list) -> str:
 
         # Run sentiment analysis
         sentiments = self.sentiment_analyzer.analyze(user_message)
         print(f"Detected sentiments: {sentiments}")
+        self.update_syste_prompt(sentiments=sentiments)
 
         # Detect disorder if present
         detected_disorder = None

@@ -1,5 +1,6 @@
 class PromptManager:
-    def _init_(self):
+
+    def __init__(self):
         self.base_prompt = (
             "You are a helpful and empathetic Pocket Therapist. "
             " Listen to the user and help them work through their emotions. Provide non-judgemental, warm responses according to the "
@@ -50,3 +51,9 @@ class PromptManager:
         #state_prompt = self.categories.get(self.current_category, self.categories["neutral"])
         emotions_text = "\n".join(self.categories[e] for e in sentiment_list if e in self.categories )
         return f"{self.base_prompt}\nCurrent Patientstate ({self.current_category}):\n{emotions_text}"
+    
+    def get_base_prompt(self):
+        return self.base_prompt
+    
+    def get_current_category(self):
+        return self.current_category

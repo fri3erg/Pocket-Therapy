@@ -13,7 +13,9 @@ def create_ui():
                 chatbot = gr.Chatbot(height=500)
                 msg = gr.Textbox(label="Type your message...", placeholder="How are you feeling today?")
                 clear = gr.ClearButton([msg, chatbot])
+
                 
+            with gr.Column(scale=1):
                 system_prompt_viewer = gr.Textbox(
                     label="Current System Prompt",
                     value=agent.get_system_prompt(),
