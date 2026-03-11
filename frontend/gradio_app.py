@@ -5,6 +5,9 @@ from backend.chat import TherapyAgent
 def create_ui():
     agent = TherapyAgent()
     
+    def reset_all():
+        return "", [], agent.get_system_prompt()
+    
     with gr.Blocks(title="Pocket Therapy") as demo:
         gr.Markdown("# Pocket Therapy Chatbot \n\nYour personal AI therapist.")
         
@@ -12,7 +15,8 @@ def create_ui():
             with gr.Column(scale=3):
                 chatbot = gr.Chatbot(height=500)
                 msg = gr.Textbox(label="Type your message...", placeholder="How are you feeling today?")
-                clear = gr.ClearButton([msg, chatbot])
+
+                clear_btn = gr.Button("Reset Conversation")
 
                 
             with gr.Column(scale=1):
@@ -34,6 +38,7 @@ def create_ui():
             # Return empty msg, updated history, updated prompt
             return "", history, agent.get_system_prompt()
         
+        clear_btn.click(reset_all, None, [msg, chatbot, system_prompt_viewer])
         msg.submit(handle_message, [msg, chatbot], [msg, chatbot, system_prompt_viewer])
 
 
