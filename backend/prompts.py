@@ -45,15 +45,11 @@ class PromptManager:
             "personality_disorder": "The user may be discussing a personality disorder or related challenges. Respond respectfully and without stigma, acknowledge the complexity of their experiences, and encourage thoughtful discussion."
         }
 
-        self.current_category = "neutral"
         
     def get_full_prompt(self, sentiment_list: list) -> str:
-        #state_prompt = self.categories.get(self.current_category, self.categories["neutral"])
         emotions_text = "\n".join(self.categories[e] for e in sentiment_list if e in self.categories )
-        return f"{self.base_prompt}\nCurrent Patient state ({self.current_category}):\n{emotions_text}"
+        return f"{self.base_prompt}\nCurrent Patient state:\n{emotions_text}"
     
     def get_base_prompt(self):
         return self.base_prompt
     
-    def get_current_category(self):
-        return self.current_category

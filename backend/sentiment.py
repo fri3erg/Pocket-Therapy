@@ -1,5 +1,7 @@
-from transformers import pipeline
-class SentimentAnalyzer:
+from transformers import pipeline 
+THRESHOLD = 0.8
+class SentimentAnalyzer:   
+
     def __init__(self):
         # future: self.classifier = pipeline("sentiment-analysis", model="bhadresh-savani/distilbert-base-uncased-emotion")
         # 1) General emotion model
@@ -32,9 +34,10 @@ class SentimentAnalyzer:
         k = 2
         goemotion_filtered = sorted(goemotion_out, key=lambda x: x["score"], reverse=True)[:k]
         
-        top_mental_health = max(mental_health_out, key=lambda x: x["score"])
+        mental_health_filtered = [e for e in mental_health_out if e["score"] >= THRESHOLD]
+        top_mental_health = [max(mental_health_filtered, key=lambda x: x["score"])] if mental_health_filtered else []
 
-        combined = [top_emotion] + goemotion_filtered + [top_mental_health]
+        combined = [top_emotion] + goemotion_filtered + top_mental_health
 
 
         filtered_emotions = list(dict.fromkeys(e["label"] for e in combined))
