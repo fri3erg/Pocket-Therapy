@@ -179,8 +179,10 @@ class TherapyAgent:
                                 )
 
                                 if detected_disorder:
+                                    # Clean up underscores for the user-facing message (e.g. personality_disorder -> personality disorder)
+                                    display_name = detected_disorder.replace("_", " ")
                                     final_text = (
-                                        self.professional_help_message.format(disorder=detected_disorder)
+                                        self.professional_help_message.format(disorder=display_name)
                                         + final_text
                                     )
 
@@ -192,8 +194,9 @@ class TherapyAgent:
             final_text = response_message.content or "I hear you."
 
             if detected_disorder:
+                display_name = detected_disorder.replace("_", " ")
                 final_text = (
-                    self.professional_help_message.format(disorder=detected_disorder)
+                    self.professional_help_message.format(disorder=display_name)
                     + final_text
                 )
 
