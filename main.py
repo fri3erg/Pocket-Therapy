@@ -6,6 +6,7 @@ from frontend.gradio_app import create_ui
 # Load environment variables
 load_dotenv()
 
+"""
 def run_terminal_chat():
     print("--------------------------------------------------")
     print("Initializing Pocket Therapy...")
@@ -39,6 +40,8 @@ def run_terminal_chat():
             break
         except Exception as e:
             print(f"\nAn error occurred: {e}\n")
+
+"""
 
 if __name__ == "__main__":
     demo = create_ui()

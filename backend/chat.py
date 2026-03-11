@@ -37,7 +37,7 @@ class TherapyAgent:
             "it's also important to seek professional help. A professional is better equipped to help you through these "
             "delicate times. You don't have to go through this alone.\n\n"
         )
-
+        """
         # LLM tool definition
         self.tools: list[ChatCompletionToolParam] = [
             {
@@ -97,11 +97,12 @@ class TherapyAgent:
                 }
             }
         ]
+        """
 
     def get_system_prompt(self,) -> str:
         return self.system_prompt
     
-    def update_syste_prompt(self, sentiments: typing.List) -> str:
+    def update_system_prompt(self, sentiments: typing.List) -> str:
         self.system_prompt = self.prompt_manager.get_full_prompt(sentiments)
 
     def get_response(self, user_message: str, history: list) -> str:
@@ -109,13 +110,13 @@ class TherapyAgent:
         # Run sentiment analysis
         sentiments = self.sentiment_analyzer.analyze(user_message)
         print(f"Detected sentiments: {sentiments}")
-        self.update_syste_prompt(sentiments=sentiments)
+        self.update_system_prompt(sentiments=sentiments)
 
         # Detect disorder if present
         detected_disorder = None
         for s in sentiments:
-            if s in self.disorders:
-                detected_disorder = s
+            if s.lower() in self.disorders:
+                detected_disorder = s.lower()
                 break
 
         if not self.client:
@@ -133,8 +134,8 @@ class TherapyAgent:
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=messages,
-                tools=self.tools,
-                tool_choice="auto"
+                #tools=self.tools,
+                #tool_choice="auto"
             )
 
             response_message = response.choices[0].message

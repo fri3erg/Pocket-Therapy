@@ -5,8 +5,8 @@ class PromptManager:
             "You are a helpful and empathetic Pocket Therapist. "
             " Listen to the user and help them work through their emotions. Provide non-judgemental, warm responses according to the "
             "following description of what they're feeling and follow the corresponding instructions."
-            " You should adjust your therapy approach using the 'update_therapy_category' tool when you "
-            "detect a shift in the user's core emotional state or needs."
+            #" You should adjust your therapy approach using the 'update_therapy_category' tool when you "
+            #"detect a shift in the user's core emotional state or needs."
         )
 
         self.categories = {
@@ -50,7 +50,7 @@ class PromptManager:
     def get_full_prompt(self, sentiment_list: list) -> str:
         #state_prompt = self.categories.get(self.current_category, self.categories["neutral"])
         emotions_text = "\n".join(self.categories[e] for e in sentiment_list if e in self.categories )
-        return f"{self.base_prompt}\nCurrent Patientstate ({self.current_category}):\n{emotions_text}"
+        return f"{self.base_prompt}\nCurrent Patient state ({self.current_category}):\n{emotions_text}"
     
     def get_base_prompt(self):
         return self.base_prompt
