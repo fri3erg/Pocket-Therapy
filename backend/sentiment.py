@@ -1,5 +1,6 @@
 from transformers import pipeline 
-THRESHOLD = 0.8
+THRESHOLD = 0.5
+DEPRESSION_THRESHOLD = 0.8
 class SentimentAnalyzer:   
 
     def __init__(self):
@@ -35,6 +36,10 @@ class SentimentAnalyzer:
         goemotion_filtered = sorted(goemotion_out, key=lambda x: x["score"], reverse=True)[:k]
         
         mental_health_filtered = [e for e in mental_health_out if e["score"] >= THRESHOLD]
+        mental_health_filtered = [
+            e for e in mental_health_filtered
+            if e["label"] != "depression" or e["score"] >= DEPRESSION_THRESHOLD
+        ]        
         top_mental_health = [max(mental_health_filtered, key=lambda x: x["score"])] if mental_health_filtered else []
 
         combined = [top_emotion] + goemotion_filtered + top_mental_health
