@@ -14,7 +14,14 @@ def create_ui():
         with gr.Row():
             with gr.Column(scale=3):
                 chatbot = gr.Chatbot(height=500)
-                msg = gr.Textbox(label="Type your message...", placeholder="How are you feeling today?")
+                with gr.Row():
+                    msg = gr.Textbox(
+                        label=None, # Removed label for a cleaner 'chat bar' look
+                        placeholder="How are you feeling today?",
+                        show_label=False,
+                        scale=8 # Textbox takes up most of the row
+                    )
+                    submit_btn = gr.Button("Send", variant="primary", scale=1)
 
                 clear_btn = gr.Button("Reset Conversation")
 
@@ -40,6 +47,6 @@ def create_ui():
         
         clear_btn.click(reset_all, None, [msg, chatbot, system_prompt_viewer])
         msg.submit(handle_message, [msg, chatbot], [msg, chatbot, system_prompt_viewer])
-
+        submit_btn.click(handle_message, [msg, chatbot], [msg, chatbot, system_prompt_viewer])
 
     return demo
